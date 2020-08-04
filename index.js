@@ -575,45 +575,46 @@ const express = require("express");
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 
 app.get("/products/", (req, res) => {
-  return res.send(products);
+  res.send(products);
 });
 
-app.get("/products/:id", (req, res) => {
+app.get(`/product/:id`, (req, res) => {
   for (let product of products) {
-    if (product.id === req.params.id) {
-      return res.send(product);
+    if (product.id === Number(req.params.id)) {
+      res.send(product);
     }
   }
 });
 
-app.post("/products/post/:id", (req, res) => {
-  posts.forEach((post, i) => {
-    if (post.id !== req.params.id) {
-      products.push(req.body);
-      return res.send(req.body);
-    } else {
-      return res.send("This ID already exists");
+app.post("/product/:id", (req, res) => {
+  products.forEach((product) => {
+    if (product.id === Number(req.params.id)) {
+      res.send("This ID already exists");
     }
   });
+  products.push(req.body);
+  res.send(req.body);
 });
 
-app.put("/products/post/:id", (req, res) => {
+//don't work
+app.put("/product/:id", (req, res) => {
   products.forEach((product, i) => {
-    if (product.id === req.params.id) {
+    if (product.id === Number(req.params.id)) {
       product[i] = req.body;
-      return res.send(req.body);
+      res.send(req.body);
     }
   });
 });
 
-app.delete("/post/:id", (req, res) => {
+app.delete("/product/:id", (req, res) => {
   products.forEach((product, i) => {
-    if (product.id === req.params.id) {
-      post.splice(i, 1);
-      return res.send("deleted", id);
+    if (product.id === Number(req.params.id)) {
+      console.log(product);
+      products.splice(i, 1);
+      res.send(`product ${product.title} deleted`);
     }
   });
 });
