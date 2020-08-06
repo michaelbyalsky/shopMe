@@ -1,0 +1,63 @@
+body {
+    margin: 0;
+}
+
+.container {
+    background: #333;
+    padding: 1rem;
+    margin-top: 1rem;
+    width: 50%;
+}
+
+.draggable {
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid black;
+}
+
+.draggable.dragging {
+    opacity: .5;
+}
+
+.drag {
+    cursor: move;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-rows: auto;
+    padding: 10px;
+    color: var(--secondary-txt-color);
+}
+
+.grid-item {
+    padding: 10px;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    display: grid;
+    grid-template-columns: 5% 5% 85% 5%;
+}
+
+.dot {
+    height: 40px;
+    width: 40px;
+    background-color: white;
+    border-radius: 50%;
+    display: inline-block;
+    border: none;
+    outline: none;
+    font-size: 35px;
+}
+
+.add {
+    padding: 10px;
+    display: grid;
+    width: 100%;
+    margin-left: -20px;
+    place-items: center;
+}
+
+.checked {
+    text-decoration: line-through;
+    opacity: 0.8;
+}
