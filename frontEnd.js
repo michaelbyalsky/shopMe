@@ -1,6 +1,8 @@
 //const axios = require('axios').default;
 let rightPlace = false;
+let whichTask;
 const root = document.querySelector("#root")
+const productsList = document.createElement('div');
 const showButton = document.querySelector("#show");
 const singleButton = document.querySelector("#single");
 const addButton = document.querySelector("#add");
@@ -16,7 +18,7 @@ let draggables = document.querySelectorAll(".draggable");;
 let containers = document.querySelector(".container");
 
 function showList() {
-    root.innerHTML = '';
+    productsList.innerHTML = '';
     fetch('http://localhost:3000/products').then(res => res.json()).then(data => {
         createLines(data);
         draggables = document.querySelectorAll(".draggable");
@@ -29,6 +31,7 @@ function showList() {
             draggable.addEventListener('dragend', () => {
                 draggable.classList.remove('dragging');
                 rightPlace = false;
+                draggable.draggable = false;
             });
         });
         containers.addEventListener('dragover', (e) => {
@@ -107,9 +110,6 @@ function deleteProduct() {
     fetch(`http://localhost:3000/product/${num}`, { method: "DELETE" });
 }
 
-
-
-
 function getDragAfterElement(container, y) {
     const draggableElements = [...containers.querySelectorAll('.draggable:not(.dragging)')]
     return draggableElements.reduce((closest, child) => {
@@ -124,33 +124,35 @@ function getDragAfterElement(container, y) {
 }
 
 function createLines(data) {
-    let productsList = document.createElement('div');
     productsList.classList.add('grid-container', 'container');
     data.forEach(element => {
         let product = document.createElement('div');
         product.classList.add('draggable', 'grid-item');
-        product.draggable = true;
+        product.value = element.id;
         let reorder = document.createElement('i');
         reorder.classList.add('fa', 'fa-reorder', 'drag');
         reorder.addEventListener('mousedown', (e) => {
             rightPlace = true;
+            product.draggable = true;
         });
         product.appendChild(reorder);
         let span = document.createElement('span');
         span.textContent = element.title;
         let check = document.createElement('input');
         check.type = 'checkbox';
+        check.classList.add('pointer');
         check.addEventListener('change', () => {
-            if (check.checked) {
-                span.classList.add('checked');
+            if (check.checked && product.children[2].tagName == 'SPAN') {
+                product.children[2].classList.add('checked');
             } else {
-                span.classList.remove('checked');
+                product.children[2].classList.remove('checked');
             }
         });
         product.appendChild(check);
         product.appendChild(span);
         let set = document.createElement('i');
-        set.classList.add('fa', 'fa-ellipsis-v');
+        set.classList.add('fa', 'fa-ellipsis-v', 'pointer');
+        set.addEventListener('click', showSettings);
         product.appendChild(set);
         productsList.appendChild(product);
     });
@@ -159,7 +161,116 @@ function createLines(data) {
     let newProduct = document.createElement('button');
     newProduct.classList.add('dot');
     newProduct.textContent = '+';
+    newProduct.addEventListener('click', AddNewLine);
     addLine.appendChild(newProduct);
     productsList.appendChild(addLine);
     root.appendChild(productsList);
+}
+
+function showSettings(e) {
+    // Show contextmenu
+    $(".custom-menu").finish().toggle(100).css({
+        top: event.pageY + "px",
+        left: event.pageX + "px"
+    });
+
+    whichTask = e.target.parentElement;
+}
+
+document.addEventListener("mousedown", function (e) {
+
+    // If the clicked element is not the menu
+    if (!$(e.target).parents(".custom-menu").length > 0) {
+
+        // Hide it
+        $(".custom-menu").hide(100);
+    }
+});
+
+//finding the menu element
+window.onload = function () {
+    let menu = document.getElementById('custom-menu');
+    menu.addEventListener('click', removeOrEdit);
+};
+
+function removeOrEdit(e) {
+    if (e.target.textContent == 'Edit') {
+        edit(whichTask, 'edit');
+    } else {
+        fetch(`http://localhost:3000/product/${whichTask.value}`, { method: "DELETE" });
+        productsList.removeChild(whichTask);
+    }
+    $(".custom-menu").hide(100);
+}
+
+function edit(whichTask, which) {
+    let editProduct = document.createElement('input');
+    editProduct.addEventListener('keydown', (e) => {
+        if (e.key == 'Enter') {
+            let final = document.createElement('span');
+            final.textContent = editProduct.value;
+            whichTask.insertBefore(final, whichTask.children[3]);
+            whichTask.removeChild(whichTask.children[2]);
+            whichTask.children[1].checked = false;
+            let someProduct = {
+                title: final.textContent,
+                id: whichTask.value
+            };
+            if (which == 'edit') {
+                fetch(`http://localhost:3000/product/${whichTask.value}`, {
+                    method: "PUT", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(someProduct)
+                });
+            } else {
+                fetch(`http://localhost:3000/product/${someProduct.id}`, {
+                    method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(someProduct)
+                });
+            }
+        }
+    });
+    whichTask.insertBefore(editProduct, whichTask.children[3]);
+    whichTask.removeChild(whichTask.children[2]);
+}
+
+function AddNewLine(e) {
+    let product = document.createElement('div');
+    product.classList.add('draggable', 'grid-item');
+    product.value = productsList.children[productsList.children.length - 2].value + 1;
+    let reorder = document.createElement('i');
+    reorder.classList.add('fa', 'fa-reorder', 'drag');
+    reorder.addEventListener('mousedown', (e) => {
+        rightPlace = true;
+        product.draggable = true;
+    });
+    product.appendChild(reorder);
+    let span = document.createElement('span');
+    span.textContent = 'hey';
+    let check = document.createElement('input');
+    check.type = 'checkbox';
+    check.classList.add('pointer');
+    check.addEventListener('change', () => {
+        if (check.checked && product.children[2].tagName == 'SPAN') {
+            product.children[2].classList.add('checked');
+        } else {
+            product.children[2].classList.remove('checked');
+        }
+    });
+    product.appendChild(check);
+    product.appendChild(span);
+    let set = document.createElement('i');
+    set.classList.add('fa', 'fa-ellipsis-v', 'pointer');
+    set.addEventListener('click', showSettings);
+    product.appendChild(set);
+    product.addEventListener('dragstart', (e) => {
+        if (rightPlace) product.classList.add('dragging');
+    });
+
+    product.addEventListener('dragend', (e) => {
+        product.classList.remove('dragging');
+        rightPlace = false;
+        product.draggable = false;
+    });
+    productsList.insertBefore(product, e.target.parentElement);
+    whichTask = product;
+    edit(whichTask, 'new');
+    draggables = document.querySelectorAll(".draggable");
 }
