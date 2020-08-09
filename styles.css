@@ -1,10 +1,23 @@
 :root {
   --main-bg-color: #F7F7F2;
   --secondary-color: #E88873;
+  --third-color: #A62639;
 }
 
 body {
   margin: 0;
+}
+
+#sticky {
+  position: sticky;
+  top: 0;
+  background-color: var(--main-bg-color);
+}
+
+h1 {
+  color: var(--third-color);
+  padding-top: 15px;
+  font-size: 3rem;
 }
 
 #root {
@@ -12,6 +25,7 @@ body {
   width: 50%;
   margin: 0 auto;
   text-align: center;
+  border: 1px solid var(--third-color);
 }
 
 .container {
@@ -26,7 +40,7 @@ body {
 }
 
 .draggable:hover {
-  border: 1px solid black;
+  border: 1px solid var(--third-color);
 }
 
 .draggable.dragging {
@@ -54,6 +68,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   display: grid;
   grid-template-columns: 3% 3% 91% 3%;
+  grid-gap: 3px;
 }
 
 .dot {
@@ -69,7 +84,7 @@ body {
 }
 
 .dot:hover {
-  border: 1px solid black;
+  border: 1px solid var(--third-color);
   font-weight: bold;
 }
 
@@ -77,8 +92,9 @@ body {
   padding: 10px;
   display: grid;
   width: 100%;
-  margin-left: -20px;
   place-items: center;
+  position: relative;
+  right: 20px;
 }
 
 .checked {
@@ -109,5 +125,5 @@ body {
 }
 
 .custom-menu li:hover {
-  background-color: #A62639;
+  background-color: var(--third-color);
 }
