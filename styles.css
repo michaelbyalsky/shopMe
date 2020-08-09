@@ -1,9 +1,14 @@
+:root {
+  --main-bg-color: #F7F7F2;
+  --secondary-color: #E88873;
+}
+
 body {
   margin: 0;
 }
 
 #root {
-  background-color: khaki;
+  background-color: var(--main-bg-color);
   width: 50%;
   margin: 0 auto;
   text-align: center;
@@ -17,7 +22,10 @@ body {
 
 .draggable {
   padding: 1rem;
-  background-color: white;
+  background-color: var(--main-bg-color);
+}
+
+.draggable:hover {
   border: 1px solid black;
 }
 
@@ -37,7 +45,7 @@ body {
   display: grid;
   grid-template-rows: auto;
   padding: 10px;
-  color: var(--secondary-txt-color);
+  color: var(--secondary-color);
 }
 
 .grid-item {
@@ -51,7 +59,8 @@ body {
 .dot {
   height: 40px;
   width: 40px;
-  background-color: white;
+  background-color: var(--secondary-color);
+  color: var(--main-bg-color);
   border-radius: 50%;
   display: inline-block;
   border: none;
@@ -59,7 +68,8 @@ body {
   font-size: 35px;
 }
 
-.dot:active {
+.dot:hover {
+  border: 1px solid black;
   font-weight: bold;
 }
 
@@ -84,8 +94,8 @@ body {
   border: 1px solid #ccc;
   white-space: nowrap;
   font-family: sans-serif;
-  background: rosybrown;
-  color: #333;
+  background: var(--secondary-color);
+  color: var(--main-bg-color);
   border-radius: 5px;
   padding: 0;
 }
@@ -99,5 +109,5 @@ body {
 }
 
 .custom-menu li:hover {
-  background-color: #def;
+  background-color: #A62639;
 }
