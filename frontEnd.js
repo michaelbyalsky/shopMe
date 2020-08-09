@@ -144,10 +144,20 @@ function createLines(data) {
         check.addEventListener('change', () => {
             if (check.checked && product.children[2].tagName == 'SPAN') {
                 product.children[2].classList.add('checked');
+                fetch(`http://localhost:3000/product/${product.value}`, {
+                    method: "PUT", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ checked: true })
+                });
             } else {
                 product.children[2].classList.remove('checked');
+                fetch(`http://localhost:3000/product/${product.value}`, {
+                    method: "PUT", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ checked: false })
+                });
             }
         });
+        if (element.checked) {
+            span.classList.add('checked');
+            check.checked = true;
+        }
         product.appendChild(check);
         product.appendChild(span);
         let set = document.createElement('i');
