@@ -1,36 +1,5 @@
 let products = [
-  {
-    id: 1,
-    title: "Brown eggs",
-  },
-  {
-    id: 2,
-    title: "Sweet fresh strawberry",
-  },
-  {
-    id: 3,
-    title: "Asparagus",
-  },
-  {
-    id: 4,
-    title: "Green smoothie",
-  },
-  {
-    id: 5,
-    title: "Raw legumes",
-  },
-  {
-    id: 6,
-    title: "Baking cake",
-  },
-  {
-    id: 7,
-    title: "Pesto with basil",
-  },
-  {
-    id: 8,
-    title: "Hazelnut in black ceramic bowl",
-  },
+
 ];
 
 const express = require("express");

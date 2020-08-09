@@ -227,14 +227,21 @@ function edit(whichTask, which) {
         }
     });
     whichTask.insertBefore(editProduct, whichTask.children[3]);
+    editProduct.focus();
     whichTask.removeChild(whichTask.children[2]);
 }
 
 function AddNewLine(e) {
-    if (productsList.children[productsList.children.length - 2].children[2].tagName !== 'SPAN') return;
+    let value;
+    if (productsList.children.length > 1) {
+        if (productsList.children[productsList.children.length - 2].children[2].tagName !== 'SPAN') return;
+        value = productsList.children[productsList.children.length - 2].value;
+    } else {
+        value = 0;
+    }
     let product = document.createElement('div');
     product.classList.add('draggable', 'grid-item');
-    product.value = productsList.children[productsList.children.length - 2].value + 1;
+    product.value = value + 1;
     let reorder = document.createElement('i');
     reorder.classList.add('fa', 'fa-reorder', 'drag');
     reorder.addEventListener('mousedown', (e) => {
