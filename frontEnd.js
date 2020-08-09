@@ -1,23 +1,12 @@
-//const axios = require('axios').default;
 let rightPlace = false;
 let whichTask;
 const root = document.querySelector("#root")
 const productsList = document.createElement('div');
-const showButton = document.querySelector("#show");
-const singleButton = document.querySelector("#single");
-const addButton = document.querySelector("#add");
-const editButton = document.querySelector("#edit");
-const delButton = document.querySelector("#delete");
-showButton.addEventListener('click', showList);
-singleButton.addEventListener('click', showSingle);
-addButton.addEventListener('click', addProduct);
-editButton.addEventListener('click', editProduct);
-delButton.addEventListener('click', deleteProduct);
 
 let draggables = document.querySelectorAll(".draggable");;
 let containers = document.querySelector(".container");
 
-function showList() {
+(function showList() {
     productsList.innerHTML = '';
     fetch('http://localhost:3000/products').then(res => res.json()).then(data => {
         createLines(data);
@@ -46,7 +35,7 @@ function showList() {
             }
         });
     });
-}
+})();
 
 function showSingle() {
     root.innerHTML = '';
@@ -216,7 +205,7 @@ function removeOrEdit(e) {
 function edit(whichTask, which) {
     let editProduct = document.createElement('input');
     editProduct.addEventListener('keydown', (e) => {
-        if (e.key == 'Enter') {
+        if (e.key == 'Enter' && editProduct.value !== '') {
             let final = document.createElement('span');
             final.textContent = editProduct.value;
             whichTask.insertBefore(final, whichTask.children[3]);
@@ -242,6 +231,7 @@ function edit(whichTask, which) {
 }
 
 function AddNewLine(e) {
+    if (productsList.children[productsList.children.length - 2].children[2].tagName !== 'SPAN') return;
     let product = document.createElement('div');
     product.classList.add('draggable', 'grid-item');
     product.value = productsList.children[productsList.children.length - 2].value + 1;
