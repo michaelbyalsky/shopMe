@@ -54,67 +54,6 @@ let containers = document.querySelector(".container");
     });
 })();
 
-function showSingle() {
-    root.innerHTML = '';
-    let num = prompt('please enter product id: ');
-    fetch(`http://localhost:3000/product/${num}`).then(res => res.json()).then(data => {
-        let product = document.createElement('span');
-        product.textContent = data.title;
-        root.appendChild(product);
-    });
-}
-
-function addProduct() {
-    root.innerHTML = '';
-    let someProduct = {
-        id: 11,
-        title: "Brownish eggs",
-        type: "dairy",
-        description: "Raw organic brown eggs in a basket",
-        filename: "0.jpg",
-        height: 600,
-        width: 400,
-        price: 28.1,
-        rating: 4,
-    };
-    root.innerHTML = '';
-    fetch(`http://localhost:3000/product/${someProduct.id}`, {
-        method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(someProduct)
-    }).then(res => res.json()).then(data => {
-        let product = document.createElement('span');
-        product.textContent = data.title;
-        root.appendChild(product);
-    });
-}
-
-function editProduct() {
-    root.innerHTML = '';
-    let someProduct = {
-        id: 18,
-        title: "Brownish eggs",
-        type: "dairy",
-        description: "Raw organic brown eggs in a basket",
-        filename: "0.jpg",
-        height: 600,
-        width: 400,
-        price: 28.1,
-        rating: 4,
-    };
-    let num = prompt('please enter product id: ');
-    fetch(`http://localhost:3000/product/${num}`, {
-        method: "PUT", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(someProduct)
-    }).then(res => res.json()).then(data => {
-        let product = document.createElement('span');
-        product.textContent = data.title;
-        root.appendChild(product);
-    });
-}
-
-function deleteProduct() {
-    root.innerHTML = '';
-    let num = prompt('please enter product id: ');
-    fetch(`http://localhost:3000/product/${num}`, { method: "DELETE" });
-}
 
 function getDragAfterElement(container, y) {
     const draggableElements = [...containers.querySelectorAll('.draggable:not(.dragging)')]
