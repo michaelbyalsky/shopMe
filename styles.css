@@ -69,6 +69,7 @@ h1 {
   display: grid;
   grid-template-columns: 3% 3% 91% 3%;
   grid-gap: 3px;
+  text-align: center;
 }
 
 .dot {
@@ -126,4 +127,8 @@ h1 {
 
 .custom-menu li:hover {
   background-color: var(--third-color);
+}
+
+span {
+  text-align: left;
 }
