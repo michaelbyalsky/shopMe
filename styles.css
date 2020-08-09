@@ -27,7 +27,6 @@ h1 {
   margin: 0 auto;
   text-align: center;
   border: 1px solid var(--third-color);
-  border-radius: 15px;
 }
 
 .container {
@@ -43,7 +42,6 @@ h1 {
 
 .draggable:hover {
   border: 1px solid var(--third-color);
-  border-radius: 15px;
 }
 
 .draggable.dragging {
