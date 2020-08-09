@@ -1,5 +1,8 @@
 let rightPlace = false;
 let whichTask;
+let highestID = 0;
+let elementOrder;
+let prevElement;
 const root = document.querySelector("#root")
 const productsList = document.createElement('div');
 
@@ -21,6 +24,17 @@ let containers = document.querySelector(".container");
                 draggable.classList.remove('dragging');
                 rightPlace = false;
                 draggable.draggable = false;
+                console.log(elementOrder);
+                fetch(`http://localhost:3000/product/${draggable.value}`, {
+                    method: "PUT", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ order: elementOrder })
+                }).then(() => {
+                    draggable.key = elementOrder;
+                });
+                fetch(`http://localhost:3000/product/${prevElement.value}`, {
+                    method: "PUT", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ order: prevElement.key + 1 })
+                }).then(() => {
+                    prevElement.key++;
+                });
             });
         });
         containers.addEventListener('dragover', (e) => {
@@ -30,8 +44,11 @@ let containers = document.querySelector(".container");
             const draggable = document.querySelector('.dragging');
             if (afterElement == null) {
                 containers.insertBefore(draggable, document.querySelector('.add'));
+                elementOrder += 2
             } else {
                 containers.insertBefore(draggable, afterElement);
+                elementOrder = afterElement.key - 1;
+                prevElement = afterElement;
             }
         });
     });
@@ -115,9 +132,11 @@ function getDragAfterElement(container, y) {
 function createLines(data) {
     productsList.classList.add('grid-container', 'container');
     data.forEach(element => {
+        highestID = element.id > highestID ? element.id : highestID;
         let product = document.createElement('div');
         product.classList.add('draggable', 'grid-item');
         product.value = element.id;
+        product.key = element.order;
         let reorder = document.createElement('i');
         reorder.classList.add('fa', 'fa-reorder', 'drag');
         reorder.addEventListener('mousedown', (e) => {
@@ -153,7 +172,19 @@ function createLines(data) {
         set.classList.add('fa', 'fa-ellipsis-v', 'pointer');
         set.addEventListener('click', showSettings);
         product.appendChild(set);
-        productsList.appendChild(product);
+        if (productsList.children.length == 0) {
+            productsList.appendChild(product);
+        }
+        for (let i = 0; i < productsList.children.length; i++) {
+            const prev = productsList.children[i];
+            if (product.key < prev.key) {
+                productsList.insertBefore(product, prev);
+                break;
+            } else if (i === productsList.children.length - 1) {
+                productsList.appendChild(product);
+            }
+        }
+
     });
     let addLine = document.createElement('div');
     addLine.classList.add('add');
@@ -164,6 +195,7 @@ function createLines(data) {
     addLine.appendChild(newProduct);
     productsList.appendChild(addLine);
     root.appendChild(productsList);
+    console.log(highestID);
 }
 
 function showSettings(e) {
@@ -211,17 +243,16 @@ function edit(whichTask, which) {
             whichTask.insertBefore(final, whichTask.children[3]);
             whichTask.removeChild(whichTask.children[2]);
             whichTask.children[1].checked = false;
-            let someProduct = {
-                title: final.textContent,
-                id: whichTask.value
-            };
             if (which == 'edit') {
                 fetch(`http://localhost:3000/product/${whichTask.value}`, {
-                    method: "PUT", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(someProduct)
+                    method: "PUT", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: final.textContent, id: whichTask.value })
                 });
             } else {
-                fetch(`http://localhost:3000/product/${someProduct.id}`, {
-                    method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(someProduct)
+                fetch(`http://localhost:3000/product/${highestID + 1}`, {
+                    method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: final.textContent, id: highestID + 1, order: (highestID + 1) * 1000 })
+                }).then(() => {
+                    highestID++;
+                    console.log(highestID);
                 });
             }
         }
@@ -235,7 +266,7 @@ function AddNewLine(e) {
     let value;
     if (productsList.children.length > 1) {
         if (productsList.children[productsList.children.length - 2].children[2].tagName !== 'SPAN') return;
-        value = productsList.children[productsList.children.length - 2].value;
+        value = highestID;
     } else {
         value = 0;
     }

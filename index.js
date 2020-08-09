@@ -1,5 +1,4 @@
 let products = [
-
 ];
 
 const express = require("express");
