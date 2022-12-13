@@ -19,6 +19,6 @@
   "homepage": "https://github.com/michaelbyalsky/shopMe#readme",
   "dependencies": {
     "axios": "^0.19.2",
-    "express": "^4.17.1"
+    "express": "^4.17.3"
   }
 }
